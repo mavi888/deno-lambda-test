@@ -1,19 +1,20 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: "AWS::Serverless-2016-10-31"
 
 Resources:
-
   MyApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: dev
-    
+
   HelloFunction:
-    Type: 'AWS::Serverless::Function'
+    Type: "AWS::Serverless::Function"
     Properties:
-      Handler: handler.hello
-      Runtime: nodejs12.x
+      Handler: hello.handler
+      Runtime: provided
       CodeUri: ./hello
+      Layers:
+        - <your-layer-arn>
       Events:
         HelloAPI:
           Type: Api
@@ -21,7 +22,7 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /hello
             Method: GET
-  
+
 Outputs:
   Region:
     Description: "Region"
@@ -33,4 +34,4 @@ Outputs:
 
   ApiUrl:
     Description: "API endpoint URL for Prod environment"
-    Value: !Sub 'https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/dev/'
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/dev/"
